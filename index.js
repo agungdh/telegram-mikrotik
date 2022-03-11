@@ -17,11 +17,7 @@ app.get('/', (req, res) => {
 })
 
 app.get('/getActiveIsp', (req, res) => {
-  const api = new RouterOSClient({
-    host: process.env.MIKROTIK_HOST,
-    user: process.env.MIKROTIK_USER,
-    password: process.env.MIKROTIK_PASS
-  });
+  const api = getRosClient();
 
   api.connect().then((client) => {
       client.menu("/ip route print").where('id', '*7').getOnly().then((result) => {
@@ -43,11 +39,7 @@ app.get('/getActiveIsp', (req, res) => {
 })
 
 app.get('/setActiveIsp/indihome', (req, res) => {
-  const conn = new RosApi({
-    host: process.env.MIKROTIK_HOST,
-    user: process.env.MIKROTIK_USER,
-    password: process.env.MIKROTIK_PASS
-  });
+  const conn = getRosApi();
 
   conn.connect()
     .then(() => {
@@ -70,11 +62,7 @@ app.get('/setActiveIsp/indihome', (req, res) => {
 })
 
 app.get('/setActiveIsp/icon', (req, res) => {
-  const conn = new RosApi({
-    host: process.env.MIKROTIK_HOST,
-    user: process.env.MIKROTIK_USER,
-    password: process.env.MIKROTIK_PASS
-  });
+  const conn = getRosApi();
 
   conn.connect()
     .then(() => {
@@ -119,11 +107,7 @@ bot.command('checkisp', (ctx) => {
     return;
   }
 
-  const api = new RouterOSClient({
-    host: process.env.MIKROTIK_HOST,
-    user: process.env.MIKROTIK_USER,
-    password: process.env.MIKROTIK_PASS
-  });
+  const api = getRosClient();
 
   api.connect().then((client) => {
       client.menu("/ip route print").where('id', '*7').getOnly().then((result) => {
@@ -151,11 +135,7 @@ bot.command('setispindihome', (ctx) => {
     return;
   }
 
-  const conn = new RosApi({
-    host: process.env.MIKROTIK_HOST,
-    user: process.env.MIKROTIK_USER,
-    password: process.env.MIKROTIK_PASS
-  });
+  const conn = getRosApi();
 
   conn.connect()
     .then(() => {
@@ -184,11 +164,7 @@ bot.command('setispicon', (ctx) => {
     return;
   }
   
-  const conn = new RosApi({
-    host: process.env.MIKROTIK_HOST,
-    user: process.env.MIKROTIK_USER,
-    password: process.env.MIKROTIK_PASS
-  });
+  const conn = getRosApi();
 
   conn.connect()
     .then(() => {
@@ -211,6 +187,22 @@ bot.command('setispicon', (ctx) => {
 })
 
 bot.launch()
+
+function getRosApi() {
+  return new RosApi({
+    host: process.env.MIKROTIK_HOST,
+    user: process.env.MIKROTIK_USER,
+    password: process.env.MIKROTIK_PASS
+  });
+}
+
+function getRosClient() {
+  return new RouterOSClient({
+    host: process.env.MIKROTIK_HOST,
+    user: process.env.MIKROTIK_USER,
+    password: process.env.MIKROTIK_PASS
+  });
+}
 
 // Enable graceful stop
 process.once('SIGINT', () => bot.stop('SIGINT'))
