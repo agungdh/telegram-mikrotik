@@ -210,6 +210,62 @@ bot.command('setispicon', (ctx) => {
     });
 })
 
+bot.command('test', (ctx) => {
+  if (!telegramAdmins.includes(ctx.message.chat.id.toString())) {
+    ctx.reply("unauthorized access");
+
+    return;
+  }
+
+  ctx.reply('yahaha 1 2')
+})
+
+bot.command('adminlinkbackupsimda', (ctx) => {
+  if (!telegramAdmins.includes(ctx.message.chat.id.toString())) {
+    ctx.reply("unauthorized access");
+
+    return;
+  }
+
+  ctx.reply('https://db.bpkad.agungdh.com:82')
+})
+
+bot.command('backupsimda2022', (ctx) => {
+  if (!telegramAdmins.includes(ctx.message.chat.id.toString())) {
+    ctx.reply("unauthorized access");
+
+    return;
+  }
+
+  axios.get('http://192.168.0.2:3001/backup2022')
+  .then(function (response) {
+    // handle success
+    ctx.reply(response.data)
+  })
+  .catch(function (error) {
+    // handle error
+    ctx.reply('Failed')
+  })
+})
+
+bot.command('backupsimda2021', (ctx) => {
+  if (!telegramAdmins.includes(ctx.message.chat.id.toString())) {
+    ctx.reply("unauthorized access");
+
+    return;
+  }
+
+  axios.get('http://192.168.0.2:3001/backup2021')
+  .then(function (response) {
+    // handle success
+    ctx.reply(response.data)
+  })
+  .catch(function (error) {
+    // handle error
+    ctx.reply('Failed')
+  })
+})
+
 bot.launch()
 
 // Enable graceful stop
