@@ -4,16 +4,35 @@ const RouterOSClient = require('routeros-client').RouterOSClient;
 const RosApi = require('node-routeros').RouterOSAPI;
 require('dotenv').config()
 const { Telegraf } = require('telegraf')
+var moment = require('moment-timezone');
 
 const bot = new Telegraf(process.env.TELEGRAM_API_KEY)
 
 const app = express()
 const port = process.env.EXPRESS_PORT
-
+var bodyParser = require('body-parser')
+app.use( bodyParser.json() );       // to support JSON-encoded bodies
+app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
+  extended: true
+})); 
 var telegramAdmins = process.env.TELEGRAM_CHAT_ID.split(",");
 
 app.get('/', (req, res) => {
   res.send('Hello World!')
+})
+
+app.post('/donebackup2022', (req, res) => {
+  // console.log(req.body);
+
+  const waktuCronSendTelegram = moment.tz(moment(), 'Asia/Jakarta').format('DDMMYYYY HHmmss')
+  const arrays = telegramAdmins;
+  for (let index = 0; index < arrays.length; index++) {
+    const element = arrays[index];
+    // console.log(req.body);
+    bot.telegram.sendMessage(element, `${waktuCronSendTelegram}: SIMDA 2022 Auto Backup`);
+    bot.telegram.sendMessage(element, `${req.body.url}`);
+  }
+  res.send();
 })
 
 app.get('/getActiveIsp', (req, res) => {
