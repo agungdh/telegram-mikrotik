@@ -9,12 +9,19 @@ var moment = require('moment-timezone');
 const bot = new Telegraf(process.env.TELEGRAM_API_KEY)
 
 const app = express()
+
+//import library CORS
+const cors = require('cors')
+
+//use cors
+app.use(cors())
+
 const port = process.env.EXPRESS_PORT
 var bodyParser = require('body-parser')
-app.use( bodyParser.json() );       // to support JSON-encoded bodies
+app.use(bodyParser.json());       // to support JSON-encoded bodies
 app.use(bodyParser.urlencoded({     // to support URL-encoded bodies
   extended: true
-})); 
+}));
 var telegramAdmins = process.env.TELEGRAM_CHAT_ID.split(",");
 
 app.get('/', (req, res) => {
@@ -39,19 +46,19 @@ app.get('/getActiveIsp', (req, res) => {
   const api = getRosClient();
 
   api.connect().then((client) => {
-      client.menu("/ip route print").where('id', '*7').getOnly().then((result) => {
-          api.close();
-          
-          if (result.disabled) {
-            res.send("icon");
-          } else {
-            res.send("indihome");
-          }
-      }).catch((err) => {
-          api.close();
+    client.menu("/ip route print").where('id', '*7').getOnly().then((result) => {
+      api.close();
 
-          console.log(err);
-      });
+      if (result.disabled) {
+        res.send("icon");
+      } else {
+        res.send("indihome");
+      }
+    }).catch((err) => {
+      api.close();
+
+      console.log(err);
+    });
   }).catch((err) => {
     console.log(err.message);
   });
@@ -62,21 +69,21 @@ app.get('/setActiveIsp/indihome', (req, res) => {
 
   conn.connect()
     .then(() => {
-        conn.write('/ip/route/enable', [
-            '=numbers=*7',
-        ])
+      conn.write('/ip/route/enable', [
+        '=numbers=*7',
+      ])
         .then((data) => {
-            conn.close();
-            res.send('success');
+          conn.close();
+          res.send('success');
         })
         .catch((err) => {
-            conn.close();
-            console.log(err);
-            res.send('failed');
+          conn.close();
+          console.log(err);
+          res.send('failed');
         });
     })
     .catch((err) => {
-        console.log(err);
+      console.log(err);
     });
 })
 
@@ -85,32 +92,32 @@ app.get('/setActiveIsp/icon', (req, res) => {
 
   conn.connect()
     .then(() => {
-        conn.write('/ip/route/disable', [
-            '=numbers=*7',
-        ])
+      conn.write('/ip/route/disable', [
+        '=numbers=*7',
+      ])
         .then((data) => {
-            conn.close();
-            res.send('success');
+          conn.close();
+          res.send('success');
         })
         .catch((err) => {
-            conn.close();
-            console.log(err);
-            res.send('failed');
+          conn.close();
+          console.log(err);
+          res.send('failed');
         });
     })
     .catch((err) => {
-        console.log(err);
+      console.log(err);
     });
 })
 
 app.get('/getLocalIp', (req, res) => {
   axios.get(`https://api.ipgeolocation.io/ipgeo?apiKey=${process.env.API_IPGEOLOCATION_IO_API_KEY}`)
-  .then(function (response) {
-    res.send(response.data);
-  })
-  .catch(function (error) {
-    console.log(error.message);
-  })
+    .then(function (response) {
+      res.send(response.data);
+    })
+    .catch(function (error) {
+      console.log(error.message);
+    })
 })
 
 app.listen(port, () => {
@@ -129,19 +136,19 @@ bot.command('checkisp', (ctx) => {
   const api = getRosClient();
 
   api.connect().then((client) => {
-      client.menu("/ip route print").where('id', '*7').getOnly().then((result) => {
-          api.close();
-          
-          if (result.disabled) {
-            ctx.reply('icon')
-          } else {
-            ctx.reply('indihome')
-          }
-      }).catch((err) => {
-          api.close();
+    client.menu("/ip route print").where('id', '*7').getOnly().then((result) => {
+      api.close();
 
-          console.log(err);
-      });
+      if (result.disabled) {
+        ctx.reply('icon')
+      } else {
+        ctx.reply('indihome')
+      }
+    }).catch((err) => {
+      api.close();
+
+      console.log(err);
+    });
   }).catch((err) => {
     console.log(err.message);
   });
@@ -158,21 +165,21 @@ bot.command('setispindihome', (ctx) => {
 
   conn.connect()
     .then(() => {
-        conn.write('/ip/route/enable', [
-            '=numbers=*7',
-        ])
+      conn.write('/ip/route/enable', [
+        '=numbers=*7',
+      ])
         .then((data) => {
-            conn.close();
-            ctx.reply('success')
+          conn.close();
+          ctx.reply('success')
         })
         .catch((err) => {
-            conn.close();
-            console.log(err);
-            ctx.reply('failed')
+          conn.close();
+          console.log(err);
+          ctx.reply('failed')
         });
     })
     .catch((err) => {
-        console.log(err);
+      console.log(err);
     });
 })
 
@@ -182,26 +189,26 @@ bot.command('setispicon', (ctx) => {
 
     return;
   }
-  
+
   const conn = getRosApi();
 
   conn.connect()
     .then(() => {
-        conn.write('/ip/route/disable', [
-            '=numbers=*7',
-        ])
+      conn.write('/ip/route/disable', [
+        '=numbers=*7',
+      ])
         .then((data) => {
-            conn.close();
-            ctx.reply('success')
+          conn.close();
+          ctx.reply('success')
         })
         .catch((err) => {
-            conn.close();
-            console.log(err);
-            ctx.reply('failed')
+          conn.close();
+          console.log(err);
+          ctx.reply('failed')
         });
     })
     .catch((err) => {
-        console.log(err);
+      console.log(err);
     });
 })
 
@@ -233,14 +240,14 @@ bot.command('backupsimda2022', (ctx) => {
   }
 
   axios.get('http://192.168.0.2:3001/backup2022')
-  .then(function (response) {
-    // handle success
-    ctx.reply(response.data)
-  })
-  .catch(function (error) {
-    // handle error
-    ctx.reply('Failed')
-  })
+    .then(function (response) {
+      // handle success
+      ctx.reply(response.data)
+    })
+    .catch(function (error) {
+      // handle error
+      ctx.reply('Failed')
+    })
 })
 
 bot.command('backupsimda2021', (ctx) => {
@@ -251,14 +258,14 @@ bot.command('backupsimda2021', (ctx) => {
   }
 
   axios.get('http://192.168.0.2:3001/backup2021')
-  .then(function (response) {
-    // handle success
-    ctx.reply(response.data)
-  })
-  .catch(function (error) {
-    // handle error
-    ctx.reply('Failed')
-  })
+    .then(function (response) {
+      // handle success
+      ctx.reply(response.data)
+    })
+    .catch(function (error) {
+      // handle error
+      ctx.reply('Failed')
+    })
 })
 
 bot.launch()
