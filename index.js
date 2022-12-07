@@ -28,6 +28,12 @@ app.get('/', (req, res) => {
   res.send('Hello World!')
 })
 
+app.get('/linkdb/:tahun', async (req, res) => {
+  let resp = await axios.get(`http://192.168.0.2:3001/list${req.params.tahun}`)
+  console.log(resp.data)
+  res.send(resp.data)
+})
+
 app.post('/donebackup2022', (req, res) => {
   // console.log(req.body);
 
