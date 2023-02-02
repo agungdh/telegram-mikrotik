@@ -48,6 +48,20 @@ app.post('/donebackup2022', (req, res) => {
   res.send();
 })
 
+app.post('/donebackup2023', (req, res) => {
+  // console.log(req.body);
+
+  const waktuCronSendTelegram = moment.tz(moment(), 'Asia/Jakarta').format('DDMMYYYY HHmmss')
+  const arrays = telegramAdmins;
+  for (let index = 0; index < arrays.length; index++) {
+    const element = arrays[index];
+    // console.log(req.body);
+    bot.telegram.sendMessage(element, `${waktuCronSendTelegram}: SIMDA 2023 Auto Backup`);
+    bot.telegram.sendMessage(element, `${req.body.url}`);
+  }
+  res.send();
+})
+
 app.get('/getActiveIsp', (req, res) => {
   const api = getRosClient();
 
@@ -246,6 +260,24 @@ bot.command('backupsimda2022', (ctx) => {
   }
 
   axios.get('http://192.168.0.2:3001/backup2022')
+    .then(function (response) {
+      // handle success
+      ctx.reply(response.data)
+    })
+    .catch(function (error) {
+      // handle error
+      ctx.reply('Failed')
+    })
+})
+
+bot.command('backupsimda2023', (ctx) => {
+  if (!telegramAdmins.includes(ctx.message.chat.id.toString())) {
+    ctx.reply("unauthorized access");
+
+    return;
+  }
+
+  axios.get('http://192.168.0.2:3001/backup2023')
     .then(function (response) {
       // handle success
       ctx.reply(response.data)
